@@ -1,25 +1,39 @@
 :- [diagnosis].
 
 
-
-%call_prob1(_, _, _, [], [], OUT).
-call_prob1(SD, COMP, OBS, HS, CS, OUT) :-
-    % Calls problem 1 till all conflict sets are gotten.
+% ########################################################
+% Gets the complete critical set for a diagnosis problem.
+% Currently needs to be called till failure and then the last output can be taken.
+% ?- call_problem1(SD, COMPS, OBS, [], CS, [], O)
+call_problem1(SD, COMP, OBS, HS, CS, OUT, OUT).
+call_problem1(SD, COMP, OBS, HS, CS, OUT, O) :-
+    %write("HS = "), write(HS),
     problem1(SD, COMP, OBS),
-    tp(SD, COMP, OBS, [HS|OUT], CS),
-    % TODO: if tp returns false return OUT.
-    call_prob1(SD, COMP, OBS, [HS|CS], CS, [OUT|CS]).
+    tp(SD, COMP, OBS, HS, CS),
+    append(HS, CS, Z),
+    call_problem1(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
 
+call_problem2(SD, COMP, OBS, HS, CS, OUT, OUT).
+call_problem2(SD, COMP, OBS, HS, CS, OUT, O) :-
+    %write("HS = "), write(HS),
+    problem2(SD, COMP, OBS),
+    tp(SD, COMP, OBS, HS, CS),
+    append(HS, CS, Z),
+    call_problem2(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
 
-call_problem1(SD, COMPS, OBS, HS, CS, OUT, OUT).
-call_problem1(SD, COMPS, OBS, HS, CS, OUT, O) :-
-    problem1(SD, COMP, OBS),
-    append(HS, OUT, Z), % add the outputs together.
-    tp(SD, COMP, OBS, Z, CS),
+call_problem3(SD, COMP, OBS, HS, CS, OUT, OUT).
+call_problem3(SD, COMP, OBS, HS, CS, OUT, O) :-
+    %write("HS = "), write(HS),
+    problem3(SD, COMP, OBS),
+    tp(SD, COMP, OBS, HS, CS),
+    append(HS, CS, Z),
+    call_problem3(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
+
+% ########################################################
 
 
 % delete all occurances of a given element from a list
-% Works.
+% ?- delSet(2, [1,2,3], [], R)
 delSet(_, [], Res, Res).
 delSet(Elem, [X|Xs], Res, R) :-
     Elem == X,
