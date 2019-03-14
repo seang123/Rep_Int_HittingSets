@@ -29,6 +29,13 @@ call_problem3(SD, COMP, OBS, HS, CS, OUT, O) :-
     append(HS, CS, Z),
     call_problem3(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
 
+call_problem4(SD, COMP, OBS, HS, CS, OUT, OUT).
+call_problem4(SD, COMP, OBS, HS, CS, OUT, O) :-
+    %write("HS = "), write(HS),
+    fulladder(SD, COMP, OBS),
+    tp(SD, COMP, OBS, HS, CS),
+    append(HS, CS, Z),
+    call_problem4(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
 % ########################################################
 
 
