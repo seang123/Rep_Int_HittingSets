@@ -99,3 +99,26 @@ create_set([L|LS], BRANCH, OUTPUT) :-
 is_done(HS) :-
     flatten(HS, L),
     HS == L.
+
+% ################ Shortest list #########################
+% returns the length of the shortest list .
+% ?- minList([[x1, x2], [x1, a2, o1]], 9999, Best).
+minList([], Best, Best).
+minList([L|Ls], Best, Len1) :-
+    length(L, N),
+    ( N < Best ) -> minList(Ls, N, Len1);
+    minList(Ls, Best, Len1).
+
+% find a lists of length N
+findshortList([L|_], N, L) :- length(L, N).
+findshortList([L|Ls], N, List) :-
+    findshortList(Ls, N, List).
+
+% finds -all- the shortest sublists
+findShortestList(IN, LL) :-
+    minList(IN, 9999, Best),
+    findall(L, findshortList(IN, Best, L), LL).
+% ########################################################
+
+
+% ######################################################
