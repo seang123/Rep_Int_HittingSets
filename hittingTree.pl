@@ -36,6 +36,35 @@ call_problem4(SD, COMP, OBS, HS, CS, OUT, O) :-
     append(HS, CS, Z),
     call_problem4(SD, COMP, OBS, Z, CCS, [OUT|CS], O).
 
+
+print_set([X|XS]):-
+  is_list(X) -> print_set(X).
+
+pair_firsts(X, Y, Out):-
+  get_first_element(X,A),
+  get_first_element(Y,B),
+  concatenate([A],[B], Out).
+
+concatenate(A, B, Out):-
+  A\==B -> append([A],[B],Out);
+  Out = A.
+
+get_first_element([X|Xs], Out):-
+  is_list(X) ->  get_first_element(X, Out);
+  Out = X.
+
+
+  % write("reached_concatenate"), atom(X), atom(Y)->  append(X, Y, Out);
+  % write("not equal"), append(X, Y, Out).
+
+%(X \== Y) ,
+%[[X1, X2],[X1, A2, O1]]
+
+% [X1, X2],[X1, A2, O1], Out
+
+
+  %write(print_set(X)),print_set(XS).
+
 % Gets the complete critical set of a diagnostic problem.
 get_problem1(X) :-
     findall(OUTPUT, call_problem1(SD, COMPS, OBS, [], CS, [], OUTPUT), O),
