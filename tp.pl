@@ -1,5 +1,6 @@
+:- style_check(-singleton). % Hides singleton variable warning message
 %% This file consists of three parts:
-%% 	(1) Leancop 2.1 
+%% 	(1) Leancop 2.1
 %%      (2) ncDP: A Non-Clausal Form Decision Procedure
 %%      (3) A simple interface tp/4 that uses leancop and ncdp to compute
 %%          conflict sets
@@ -246,7 +247,7 @@ assert_renvar([F|FunL],[F1|FunL1]) :-
     ( var(F) -> true ; F=..[Fu|Arg], assert_renvar(Arg,Arg1),
       F1=..[Fu|Arg1] ), assert_renvar(FunL,FunL1).
 
-append3(X,Y,Z,V) :- 
+append3(X,Y,Z,V) :-
 	append(X,Y,L),
 	append(L,Z,V).
 
@@ -280,7 +281,7 @@ dp(M)  :- member([L],M), ( atom(L), N= -L ; -N=L ), !,
           reduce(M,N,L,M1), dp(M1).
 
 % Beta-Splitting
-dp([[[C1|M],[C2|M2]|C]|M1])  :- !, 
+dp([[[C1|M],[C2|M2]|C]|M1])  :- !,
    dp([[[C1|M]]|M1]), dp([[[C2|M2]]|M1]), dp([C|M1]).
 
 % Splitting
@@ -299,8 +300,8 @@ reduce([C|M],L,N,M1) :- !,
  C1=[[]] -> reduce(M,L,N,M1) ; %% simplify
  reduce(M,L,N,M2),             %% evaluate remaining cl./mat.
  (M2=[[]] -> M1=[[]] ;         %% matrix/clause elimination
-  M2=[], C1=[M3] -> M1=M3 ; M1=[C1|M2] )). 
-  
+  M2=[], C1=[M3] -> M1=M3 ; M1=[C1|M2] )).
+
 reduce(A,_,_,A).
 
 %% select literal
@@ -312,7 +313,7 @@ selectLit(A,A,-A).
 pure(M,M1) :- litM(M,LitM), pure(M,LitM,M1,LitM).
 
 pure(M,[],M,_).
-pure(M,[L|LitM],M1,LL) :- 
+pure(M,[L|LitM],M1,LL) :-
    (L= -N ; -L=N), !,
    (member(N,LL) -> M2=M ;
     reduce(M,N,L,M2)), pure(M2,LitM,M1,LL).
@@ -335,7 +336,7 @@ instantiate((_,_), _, [], (;), false).
 instantiate((X,F), COMP, [C], O, FG) :-
 	copy_term((X,F), O, (C,I)),
 	ground(I, COMP, FG).
-instantiate((X,F), COMP, [C|Rest], O, AG) :-  
+instantiate((X,F), COMP, [C|Rest], O, AG) :-
 	copy_term((X,F),(C,I)),
 	ground(I, COMP, FG),
 	instantiate((X,F), COMP, Rest, O, RG),
@@ -352,10 +353,10 @@ ground(Lit, _, Lit).
 
 
 % -----------------------------------------------------------------------------
-%  tp(+SD,+COMP, +OBS, +HS, -CS)  
+%  tp(+SD,+COMP, +OBS, +HS, -CS)
 %             -  Determines a conflict set for the diagnostic problem
 %                (SD,COMP-HS,OBS). The term ~ab(c) is assumed for all
-%                elements of COMP-HS.              
+%                elements of COMP-HS.
 %
 %  SD: list of first-order formula, where variables are understood to quantify
 %      over elements in COMP
@@ -372,7 +373,7 @@ tp(SD, COMP, OBS, HS, CS) :-
 	append3(SD, S, OBS, Theory),   % construct theory
 	conjunction(Theory, F),        % construct formula
 	ground(F, COMP, F2),!,         % ground formula based on COMP
-	prove(~((F2))),                % establish truth of negated formula 
+	prove(~((F2))),                % establish truth of negated formula
 	prove(~((F2)), Proof),         % find proof (if true)
 	flatten(Proof,FlatProof),      % extract elements of proof
 	include(copy_term(ab(_)),FlatProof,Abs),

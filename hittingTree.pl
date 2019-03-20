@@ -1,4 +1,5 @@
 :- [diagnosis].
+:- style_check(-singleton). % Hides singleton variable warning message
 
 
 % ########################################################
@@ -14,7 +15,6 @@ call_problem1(SD, COMP, OBS, HS, CS, OUT, O) :-
 
 call_problem2(SD, COMP, OBS, HS, CS, OUT, OUT).
 call_problem2(SD, COMP, OBS, HS, CS, OUT, O) :-
-    %write("HS = "), write(HS),
     problem2(SD, COMP, OBS),
     tp(SD, COMP, OBS, HS, CS),
     append(HS, CS, Z),
@@ -22,7 +22,6 @@ call_problem2(SD, COMP, OBS, HS, CS, OUT, O) :-
 
 call_problem3(SD, COMP, OBS, HS, CS, OUT, OUT).
 call_problem3(SD, COMP, OBS, HS, CS, OUT, O) :-
-    %write("HS = "), write(HS),
     problem3(SD, COMP, OBS),
     tp(SD, COMP, OBS, HS, CS),
     append(HS, CS, Z),
@@ -30,7 +29,6 @@ call_problem3(SD, COMP, OBS, HS, CS, OUT, O) :-
 
 call_problem4(SD, COMP, OBS, HS, CS, OUT, OUT).
 call_problem4(SD, COMP, OBS, HS, CS, OUT, O) :-
-    %write("HS = "), write(HS),
     fulladder(SD, COMP, OBS),
     tp(SD, COMP, OBS, HS, CS),
     append(HS, CS, Z),
@@ -39,6 +37,18 @@ call_problem4(SD, COMP, OBS, HS, CS, OUT, O) :-
 % Gets the complete critical set of a diagnostic problem.
 get_problem1(X) :-
     findall(OUTPUT, call_problem1(SD, COMPS, OBS, [], CS, [], OUTPUT), O),
+    last(O, X).
+
+get_problem2(X) :-
+    findall(OUTPUT, call_problem2(SD, COMPS, OBS, [], CS, [], OUTPUT), O),
+    last(O, X).
+
+get_problem3(X) :-
+    findall(OUTPUT, call_problem3(SD, COMPS, OBS, [], CS, [], OUTPUT), O),
+    last(O, X).
+
+get_problem4(X) :-
+    findall(OUTPUT, call_problem4(SD, COMPS, OBS, [], CS, [], OUTPUT), O),
     last(O, X).
 % ################# delete from set ######################
 
@@ -65,4 +75,27 @@ inter([_|T1], L2, Res) :-
 % Returns only a single output which contains all elements shared between 2 lists
 % can be a list of lists
 get_inter(L1, L2, X) :- inter(L1, L2, X),!.
-% ########################################################
+
+% ################## create set ##########################
+% create_set() should create the complete tree of hitting sets
+
+% ?- create_set([[X1, X2],[X1, A2, O1]], [], OUT).
+% ?- create_set([a1, o1, a2], OUT).
+
+create_set(HS, _, OUTPUT) :-
+    % if only a single set input --> done.
+    is_done(HS) -> OUTPUT = HS, !.
+create_set([L|LS], BRANCH, OUTPUT) :-
+    fail.
+
+
+% #################### Other #############################
+
+% checks if a list L is equal to flatten(L)
+% if true - then we don't need to build a tree we have our
+% minimal hitting set.
+% ?- is_done([a1, o2, a2]). --> true
+% ?- is_done([[x1, x2], [x1, a2, o1]]). --> fail
+is_done(HS) :-
+    flatten(HS, L),
+    HS == L.
