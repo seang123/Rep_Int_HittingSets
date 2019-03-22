@@ -54,3 +54,12 @@ fulladder(SD, COMP, OBS) :-
         out(a2) <=> in1(r1), out(a1) <=> in2(r1) ],
   COMP = [a1, a2, x1, x2, r1],
   OBS = [in1(fa), ~in2(fa), carryin(fa), out(fa), ~carryout(fa)]. %1+1=1?
+
+% problem from the nonmonotonic lecture slides
+% currently only returns false.
+problem5(SD, COMP, OBS) :-
+    xor_gate(XOR), and_gate(AND), or_gate(OR),
+    SD = [ XOR, AND, OR,  xor(x1), and(a1), and(a2), xor(x2), or(o1),
+        out(x1) <=> in1(x2), out(x1) <=> in1(a2), out(a2) <=> in1(o1), out(a1) <=> in2(o1) ],
+    COMP = [ x1, x2, a1, a2, o1 ],
+    OBS = [ in1(x1), ~in2(x1), in1(a1), ~in2(a1), in1(a2), out(x2), ~out(o1) ].
