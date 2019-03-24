@@ -160,44 +160,43 @@ solver(SD, COMP, OBS, HS, TREE, CS, OUT) :-
     solver(SD, COMP, OBS, [X|HS], [X|TREE], CSS, OUT).
 
 % used to call the solver and find all solution
-solve(X) :-
-    problem3(SD, COMP, OBS),
-    findall(OUT, solver(SD, COMP, OBS, [], [], CS, OUT), X).
+solve(SD, COMP, OBS, X) :-
+    % fulladder(SD, COMP, OBS),
+    findall(OUT, solver(SD, COMP, OBS, [], [], CS, OUT), Y),
+    testprune(Y, X).
 
 
-% prunes the hitting set
-% Removes duplicates, and supersets.
-% prune(LS, LS, LS) :- !.
-% prune(LS, Ls, R) :-
-%
-%         select(T, LS, [LH|LT]),
-%         subset(LH, T)
-%     ->
-%         prune([LH|LT], [LH|LT], R)
-%     ;
-%         prune(LS, LS, R).
-
-prune(_, Acc, Acc).
+% Prunes the hitting set solutions of supersets, and duplicates
+prune(_, Acc, Acc) :-
+    length(Acc, N),
+    N > 0.
 prune([L1|Ls], Acc, R) :-
-
+        % writeln(" "),
         member(X, Ls),
+        findall(Y, member(Y, Ls), YY),
+        % write("set: "), writeln(YY),
+        % write(L1), writeln(X),
         subset(X, L1)
-    ->
+    ->  % L1 superset of X
+        % write("drop: "), writeln(L1),
         prune(Ls, [], R) % currently stops as soon as a single superset is found.
     ;
+        % write("keep: "), writeln(L1),
         prune(Ls, L1, R).
 
 
 
-
-testprune(RR) :-
-    L = [[a2, a1], [o1, a1], [o1], [a1, a2], [o1, a2]],
+testprune(L, EE) :-
+    % L = [[x1], [x1, x2], [a2, x2], [o1, x2]],
+    % L2 = [[x1, a2, a1], [x2, a2, a1], [a2, x2, a1], [r1, x2, a1], [x1, x2, a1], [x1, a1], [x1], [x1, a1, a2], [x2, a1, a2], [x1, a2], [x2, a2], [x1, a2, a1, r1], [x2, a2, a1, r1], [x2, a1, r1], [x1, a1, r1], [x1, r1], [x1, a1, a2, r1], [x2, a1, a2, r1], [x1, a2, r1], [x2, a2, r1], [x2, r1], [a2, a1, x2], [r1, a1, x2], [x1, a1, x2], [x1, x2], [a2, x2], [r1, x2]],
     length(L, N),
     % prune(L, [], R).
-    findall(R, prune(L, [], R), RR).
+    findall(R, prune(L, [], R), RR),
+    % TODO: fix this hack
+    reverse(RR, W),
+    findall(E, prune(W, [], E), EE).
 
-temp(R, T, Out) :-
-    Out = [R|[T]].
+
 
 
 
