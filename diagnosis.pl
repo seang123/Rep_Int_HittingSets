@@ -62,3 +62,15 @@ problem5(SD, COMP, OBS) :-
         out(x1) <=> in1(x2), out(x1) <=> in2(a2), out(a2) <=> in1(o1), out(a1) <=> in2(o1) ],
     COMP = [ x1, x2, a1, a2, o1 ],
     OBS = [ in1(x1), ~in2(x1), in1(a1), ~in2(a1), in1(a2), in2(x2), out(x2), ~out(o1) ].
+
+% equal to problem5 appened to itself.
+problem6(SD, COMP, OBS) :-
+    xor_gate(XOR), and_gate(AND), or_gate(OR),
+    SD = [ XOR, AND, OR, xor(x1), and(a1), and(a2), xor(x2), or(o1),
+            xor(x3), xor(x4), and(x3), and(x4), or(o2),
+            out(x1) <=> in1(x2), out(x1) <=> in2(a2), out(a2) <=> in1(o1), out(a1) <=> in2(o1),
+            out(x2) <=> in1(x3), out(o1) <=> in2(x3), out(x2) <=> in1(a3), out(o1) <=> in2(a3),
+            out(x3) <=> in1(a4), in1(x4) <=> out(x3), in2(x4) <=> out(a4), in1(o2) <=> out(a4), in2(o2) <=> out(a3)],
+    COMP = [ x1, x2, a1, a2, o1, x3, x4, a3, a4, o2 ],
+    OBS = [ in1(x1), ~in2(x1), in1(a1), ~in2(a1), in1(a2), in2(x2), out(x2), ~out(o1),
+            in1(a3), out(x2), ~out(o2) ].
